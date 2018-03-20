@@ -9,7 +9,7 @@ This sample implementation covers the following.
 + ZMQ / Websocket / Stream
 
 See the graphql.png for preview
-![alt text](https://raw.githubusercontent.com/kimdgutierrez/php-graphql-crud/master/graphql.png)
+![alt text](https://github.com/kimdgutierrez/php-graphql-crud/blob/master/preview_graphql.png)
 
 Symfony Standard Edition
 ========================
