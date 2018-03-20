@@ -31,7 +31,7 @@ class DefaultController extends Controller
         $this->query->select('a.Method');
         $this->query->from('AppBundle:UserAccess', 'a');
         $this->query->andWhere('a.Roles', ':Role');
-        $this->query->setParameters(['Role' => $usr->getRoles()[0]);
+        $this->query->setParameters(['Role' => $usr->getRoles()[0]]);
         $results = $this->query->getQuery()->setMaxResults(300)->getResult();
         return new JsonResponse(
             [
