@@ -8,6 +8,7 @@ This sample implementation covers the following.
 + Cron
 + ZMQ / Websocket / Stream
 
+See the graphql.png for preview
 
 Symfony Standard Edition
 ========================
