@@ -1,0 +1,100 @@
+# To get started with security, check out the documentation:
+# https://symfony.com/doc/current/security.html
+security:
+    encoders:
+        FOS\UserBundle\Model\UserInterface: bcrypt
+    
+    role_hierarchy:
+        ROLE_CS_MANAGER: [ROLE_USER, ROLE_CS_MANAGER]
+        ROLE_CS_TL: [ROLE_USER, ROLE_CS_TL]
+        ROLE_CS_STAFF: [ROLE_USER, ROLE_CS_STAFF]
+        
+        ROLE_FINANCE_MANAGER: [ROLE_USER, ROLE_FINANCE_MANAGER]
+        ROLE_FINANCE_TL: [ROLE_USER, ROLE_FINANCE_TL]
+        ROLE_FINANCE_STAFF: [ROLE_USER, ROLE_FINANCE_STAFF]
+        
+        ROLE_FRAUD_MANAGER: [ROLE_USER, ROLE_FRAUD_MANAGER]
+        ROLE_FRAUD_TL: [ROLE_USER, ROLE_FRAUD_TL]
+        ROLE_FRAUD_STAFF: [ROLE_USER, ROLE_FRAUD_STAFF]
+        
+        ROLE_MARKETING_MANAGER: [ROLE_USER, ROLE_MARKETING_MANAGER]
+        ROLE_MARKETING_TL: [ROLE_USER, ROLE_MARKETING_TL]
+        ROLE_MARKETING_STAFF: [ROLE_USER, ROLE_MARKETING_STAFF]
+        
+        ROLE_PAYMENT_MANAGER: [ROLE_USER, ROLE_PAYMENT_MANAGER]
+        ROLE_PAYMENT_TL: [ROLE_USER, ROLE_PAYMENT_TL]
+        ROLE_PAYMENT_STAFF: [ROLE_USER, ROLE_PAYMENT_STAFF]
+        
+        #ROLE_USER:        ROLE_USER
+        ROLE_APP_SUPPORT: [ROLE_USER, ROLE_APP_SUPPORT]
+        ROLE_EXECUTIVE: [ROLE_USER, ROLE_EXECUTIVE]
+        ROLE_ADMIN:       [ROLE_USER, ROLE_ADMIN]
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN]
+    
+    providers:
+        fos_userbundle:
+            id: fos_user.user_provider.username
+    
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        
+        login:
+            pattern:  ^/api/login
+            stateless: true
+            anonymous: true
+            form_login:
+                check_path:               /api/login_check
+                success_handler:          lexik_jwt_authentication.handler.authentication_success
+                failure_handler:          lexik_jwt_authentication.handler.authentication_failure
+                require_previous_session: false
+        
+        api:
+            pattern:   ^/api
+            stateless: true
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+        
+        userinformation:
+            pattern:   ^/user_information
+            stateless: true
+            methods: [POST]
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+        
+        graphql:
+            pattern:   ^/graphql
+            stateless: true
+            methods: [POST]
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+        
+        main:
+            pattern: ^/
+            form_login:
+                login_path: fos_user_security_login
+                check_path: fos_user_security_check
+                default_target_path: /
+                provider: fos_userbundle
+                csrf_token_generator: security.csrf.token_manager
+                require_previous_session: false
+            logout:
+                path: fos_user_security_logout
+            anonymous: true
+        
+    access_control:
+      - { path: ^/login$,   role: IS_AUTHENTICATED_ANONYMOUSLY }
+      - { path: ^/register, role: ROLE_ADMIN }
+      - { path: ^/resetting,role: ROLE_ADMIN }
+      - { path: ^/admin/,   role: ROLE_ADMIN }
+      - { path: ^/api/login,roles: IS_AUTHENTICATED_ANONYMOUSLY }
+      - { path: ^/api,      roles: IS_AUTHENTICATED_FULLY }
+      - { path: /graphql/explorer,  roles: IS_AUTHENTICATED_FULLY }
+      - { path: /graphql,  roles: IS_AUTHENTICATED_FULLY }
+      - { path: /user_information,  roles: IS_AUTHENTICATED_FULLY }
+      - { path: ^/command-scheduler/,   role: ROLE_ADMIN }
+
